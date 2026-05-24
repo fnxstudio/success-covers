@@ -171,50 +171,35 @@ html, body {
 
 /* ── Mobile ── */
 @media (max-width: 767px) {
-  /* overflow-x:hidden on body blocks vertical scroll on iOS — restore it */
-  body { overflow-y: auto; }
-
-  /* Hero expands to fit the whole grid — no clipping */
-  .hero {
-    height: auto;
-    overflow: visible;
-  }
-
-  /* Grid flows as normal document content, 3 columns */
+  /* Hero stays fixed-height and clipped — same as desktop.
+     The touch-handler fix (touchend) is what allows page scroll. */
   #grid {
-    position: relative;
-    inset: auto;
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 120px;
     grid-auto-flow: dense;
     gap: 2px;
-    padding-bottom: 56vh;
   }
 
-  /* All spans collapse to 1×1 */
   .span-wide, .span-tall, .span-large {
     grid-column: span 1 !important;
     grid-row:    span 1 !important;
   }
 
-  /* DH: full-width container + centered child avoids left-clip.
-     Safe-area padding keeps him above the home bar on notched iPhones. */
+  /* DH: full-width container centers him without left-clip risk.
+     90% height keeps him prominent and grounded at the bottom. */
   .dh-wrap {
-    position: fixed;
-    bottom: 0;
     left: 0;
     right: 0;
-    height: 56vh;
     transform: none;
+    height: 90%;
     justify-content: center;
     padding-bottom: env(safe-area-inset-bottom, 0px);
-    z-index: 100;
   }
 
   .dh-wrap img {
     height: auto;
-    max-height: 56vh;
-    max-width: 85vw;
+    max-height: 100%;
+    max-width: 90vw;
   }
 }
 </style>
