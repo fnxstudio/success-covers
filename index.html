@@ -93,6 +93,19 @@ html, body {
   transform: translateY(0);
 }
 
+/* ── Bottom vignette — masks any last-row irregularity ── */
+body::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 60%, #000 100%);
+  pointer-events: none;
+  z-index: 20;
+}
+
 /* ── Mobile ── */
 @media (max-width: 767px) {
   #grid {
@@ -191,12 +204,14 @@ function cleanName(f) {
 }
 
 // ── Deterministic tile-type pool (seeded shuffle) ─────────────────────────
-// Ratios: 60% standard · 20% tall · 15% wide · 5% large
+// Cell-unit math for n=61, 6 columns:
+//   1 large(4) + 8 wide(2) + 12 tall(2) + 40 standard(1)
+//   = 4 + 16 + 24 + 40 = 84 cell-units = exactly 6×14 rows → clean bottom
 function buildTypePool(n) {
-  const large = Math.max(3, Math.floor(n * 0.05));
-  const wide  = Math.round(n * 0.15);
-  const tall  = Math.round(n * 0.20);
-  const std   = n - large - wide - tall;
+  const large = 1;
+  const wide  = 8;
+  const tall  = 12;
+  const std   = n - large - wide - tall; // 40 for n=61
   const pool  = [
     ...Array(large).fill('large'),
     ...Array(wide).fill('wide'),
@@ -248,39 +263,6 @@ document.querySelectorAll('.tile').forEach((tile, i) =>
   setTimeout(() => tile.classList.add('visible'), i * 80)
 );
 
-// ── Fix last row: expand rightmost tile in last row to fill trailing gap ──
-function fixLastRow() {
-  const tiles = Array.from(grid.querySelectorAll('.tile'));
-  if (!tiles.length) return;
-
-  // Reset any previous fix so resize recalculates cleanly
-  tiles.forEach(t => t.style.gridColumnEnd = '');
-
-  // Read computed grid positions (browser resolves "auto" to integers)
-  const positions = tiles.map(tile => ({
-    tile,
-    rowEnd: parseInt(getComputedStyle(tile).gridRowEnd) || 0,
-    colEnd: parseInt(getComputedStyle(tile).gridColumnEnd) || 0,
-  }));
-
-  const maxRowEnd = Math.max(...positions.map(p => p.rowEnd));
-
-  // Tiles whose row span touches the final row
-  const inLastRow = positions.filter(p => p.rowEnd === maxRowEnd);
-  if (!inLastRow.length) return;
-
-  // Rightmost tile in that row
-  const rightmost = inLastRow.reduce((a, b) => b.colEnd > a.colEnd ? b : a);
-
-  // Only stretch if it doesn't already reach the last column
-  if (rightmost.colEnd < 7) {
-    rightmost.tile.style.gridColumnEnd = '-1';
-  }
-}
-
-// Give the browser time to finish grid layout before reading positions
-setTimeout(fixLastRow, 150);
-window.addEventListener('resize', () => setTimeout(fixLastRow, 50));
 
 // ── Mobile tap-to-hover ──────────────────────────────────────────────────
 // Touch devices get a tap toggle since :hover is unreliable
