@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Success Covers</title>
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: #000;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: 280px;
+  grid-auto-flow: dense;
+  width: 100%;
+  gap: 3px;
+}
+
+.tile {
+  position: relative;
+  overflow: hidden;
+  background: #0d0d0d;
+  opacity: 0;
+  transform: scale(0.93) translateY(14px);
+  will-change: opacity, transform;
+  cursor: pointer;
+}
+
+.tile.visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.span-wide  { grid-column: span 2; }
+.span-tall  { grid-row:    span 2; }
+.span-large { grid-column: span 2; grid-row: span 2; }
+
+.tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  filter: grayscale(100%);
+  transition: filter 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tile:hover img,
+.tile.tapped img {
+  filter: grayscale(0%);
+  transform: scale(1.05);
+}
+
+.tile-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 32px 12px 11px;
+  background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, transparent 100%);
+  color: #fff;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.32s ease, transform 0.32s ease;
+  pointer-events: none;
+}
+
+.tile:hover .tile-caption,
+.tile.tapped .tile-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Mobile ── */
+@media (max-width: 767px) {
+  #grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 210px;
+    grid-auto-flow: row;
+    gap: 2px;
+  }
+  .span-wide,
+  .span-tall,
+  .span-large {
+    grid-column: span 1 !important;
+    grid-row:    span 1 !important;
+  }
+}
+</style>
+</head>
+<body>
+<div id="grid"></div>
+
+<script>
+const covers = [
+  'JackWelch.jpg',
+  'SM_08_01_Kiyosaki.jpg',
+  'SM_08_02_50.jpg',
+  'SM_08_03_Trump.jpg',
+  'SM_08_04_OZ.jpg',
+  'SM_08_05_HAWK.jpg',
+  'SM_08_06_Deutsch.jpg',
+  'SM_09_01_Robbins.jpg',
+  'SM_09_02_Powell.jpg',
+  'SM_09_03_FOREMAN.jpg',
+  'SM_09_04_Maxwell.jpg',
+  'SM_09_05_ORMAN.jpg',
+  'SM_09_06_LANCE.jpg',
+  'SM_09_07_BRANSON.jpg',
+  'SM_09_08_FOX.jpg',
+  'SM_09_09_FOSTER_Barcode.jpg',
+  'SM_09_10_SERENA_barcode.jpg',
+  'SM_09_11_OSTEEN_barcode.jpg',
+  'SM_09_12_DrPHIL.jpg',
+  'SM_10_01_KEYES.jpg',
+  'SM_10_02_RAMSEY.jpg',
+  'SM_10_03_HOPKINS.jpg',
+  'SM_10_04_COLLINS.jpg',
+  'SM_10_05_MICHAELS.jpg',
+  'SM_10_06_JOBS.jpg',
+  'SM_10_07_COLE.jpg',
+  'SM_10_08_JOHNSON.jpg',
+  'SM_10_09_DELL.jpg',
+  'SM_10_10_USHER.jpg',
+  'SM_10_11_MANNINGS.jpg',
+  'SM_10_12_SHRIVER.jpg',
+  'SM_11_01_HOWARD.jpg',
+  'SM_11_02_CHAN.jpg',
+  'SM_11_03_SCHWAB.jpg',
+  'SM_11_04_SCHULTZ.jpg',
+  'SM_11_05_ZUCKERBERG.jpg',
+  'SM_11_06_MARTIN.jpg',
+  'SM_11_07_DICAPRIO.jpg',
+  'SM_11_08_BEZOS.jpg',
+  'SM_11_09_CONNICK.jpg',
+  'SM_11_10_OZ.jpg',
+  'SM_11_11_CUBAN.jpg',
+  'SM_11_12_SANTA.jpg',
+  'SM_12_01_DOWNEY.jpg',
+  'SM_12_02_KARDASHIAN.jpg',
+  'SM_12_03_BLOOMBERG.jpg',
+  'SM_12_04_LOWE.jpg',
+  'SM_12_05_ORMAN.jpg',
+  'SM_12_06_JOHANNSON.jpg',
+  'SM_12_07_TECHNOLOGY.jpg',
+  'SM_12_08_BRANSON.jpg',
+  'SM_12_09_BURNETT.jpg',
+  'SM_12_10_MAXWELL.jpg',
+  'SM_12_11_WASHINGTON.jpg',
+  'SM_12_12_COURIC.jpg',
+  'SM_13_01_STEWART.jpg',
+  'SM_13_02_MUSK.jpg',
+  'SM_13_03_CORCORAN.jpg',
+  'SM_13_04_DIAMANDIS.jpg',
+  'SM_13_05_FORD.jpg',
+  'SM_14_11_COOK.jpg',
+  'Santa1977.jpg',
+  'Tony_Hseih.jpg'
+];
+
+// ── Clean filename into readable caption ──────────────────────────────────
+function cleanName(f) {
+  let n = f.replace(/\.(jpg|jpeg|png|gif|webp)$/i, '');
+  n = n.replace(/^SM_\d+_\d+_/i, '');        // strip "SM_12_06_"
+  n = n.replace(/([a-z])([A-Z])/g, '$1 $2'); // camelCase → words
+  n = n.replace(/[_-]/g, ' ');               // underscores
+  n = n.replace(/\bbarcode\b/gi, '').replace(/\s+/g, ' ').trim();
+  n = n.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  return n;
+}
+
+// ── Deterministic tile-type pool (seeded shuffle) ─────────────────────────
+// Ratios: 60% standard · 20% tall · 15% wide · 5% large
+function buildTypePool(n) {
+  const large = Math.max(3, Math.floor(n * 0.05));
+  const wide  = Math.round(n * 0.15);
+  const tall  = Math.round(n * 0.20);
+  const std   = n - large - wide - tall;
+  const pool  = [
+    ...Array(large).fill('large'),
+    ...Array(wide).fill('wide'),
+    ...Array(tall).fill('tall'),
+    ...Array(std).fill('standard'),
+  ];
+  // LCG seeded shuffle — same layout every load
+  let s = 0xdeadbeef;
+  for (let i = pool.length - 1; i > 0; i--) {
+    s = Math.imul(s ^ (s >>> 16), 0x45d9f3b);
+    s = Math.imul(s ^ (s >>> 16), 0x45d9f3b);
+    s ^= s >>> 16;
+    const j = (Math.abs(s) >>> 0) % (i + 1);
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool;
+}
+
+// ── Build DOM ─────────────────────────────────────────────────────────────
+const types = buildTypePool(covers.length);
+const grid  = document.getElementById('grid');
+
+covers.forEach((cover, i) => {
+  const tile = document.createElement('div');
+  tile.className = 'tile';
+
+  const t = types[i];
+  if (t === 'wide')  tile.classList.add('span-wide');
+  if (t === 'tall')  tile.classList.add('span-tall');
+  if (t === 'large') tile.classList.add('span-large');
+
+  const img    = document.createElement('img');
+  img.src      = `covers/${cover}`;
+  img.alt      = cleanName(cover);
+  img.loading  = i < 18 ? 'eager' : 'lazy';
+  img.decoding = 'async';
+
+  const cap       = document.createElement('div');
+  cap.className   = 'tile-caption';
+  cap.textContent = cleanName(cover);
+
+  tile.appendChild(img);
+  tile.appendChild(cap);
+  grid.appendChild(tile);
+});
+
+// ── Staggered entrance (80 ms/tile → 65 tiles ≈ 5.2 s total) ─────────────
+document.querySelectorAll('.tile').forEach((tile, i) =>
+  setTimeout(() => tile.classList.add('visible'), i * 80)
+);
+
+// ── Mobile tap-to-hover ──────────────────────────────────────────────────
+// Touch devices get a tap toggle since :hover is unreliable
+document.querySelectorAll('.tile').forEach(tile => {
+  tile.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const active = tile.classList.contains('tapped');
+    document.querySelectorAll('.tile.tapped').forEach(t => t.classList.remove('tapped'));
+    if (!active) tile.classList.add('tapped');
+  }, { passive: false });
+});
+</script>
+</body>
+</html>
