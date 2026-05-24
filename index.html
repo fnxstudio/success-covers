@@ -248,16 +248,39 @@ document.querySelectorAll('.tile').forEach((tile, i) =>
   setTimeout(() => tile.classList.add('visible'), i * 80)
 );
 
-// ── Fix last row: expand final tile to fill any trailing gap ──────────────
-requestAnimationFrame(() => {
+// ── Fix last row: expand rightmost tile in last row to fill trailing gap ──
+function fixLastRow() {
   const tiles = Array.from(grid.querySelectorAll('.tile'));
-  const last  = tiles[tiles.length - 1];
-  const gridRight = grid.getBoundingClientRect().right;
-  const tileRight = last.getBoundingClientRect().right;
-  if (gridRight - tileRight > 5) {
-    last.style.gridColumnEnd = '-1';
+  if (!tiles.length) return;
+
+  // Reset any previous fix so resize recalculates cleanly
+  tiles.forEach(t => t.style.gridColumnEnd = '');
+
+  // Read computed grid positions (browser resolves "auto" to integers)
+  const positions = tiles.map(tile => ({
+    tile,
+    rowEnd: parseInt(getComputedStyle(tile).gridRowEnd) || 0,
+    colEnd: parseInt(getComputedStyle(tile).gridColumnEnd) || 0,
+  }));
+
+  const maxRowEnd = Math.max(...positions.map(p => p.rowEnd));
+
+  // Tiles whose row span touches the final row
+  const inLastRow = positions.filter(p => p.rowEnd === maxRowEnd);
+  if (!inLastRow.length) return;
+
+  // Rightmost tile in that row
+  const rightmost = inLastRow.reduce((a, b) => b.colEnd > a.colEnd ? b : a);
+
+  // Only stretch if it doesn't already reach the last column
+  if (rightmost.colEnd < 7) {
+    rightmost.tile.style.gridColumnEnd = '-1';
   }
-});
+}
+
+// Give the browser time to finish grid layout before reading positions
+setTimeout(fixLastRow, 150);
+window.addEventListener('resize', () => setTimeout(fixLastRow, 50));
 
 // ── Mobile tap-to-hover ──────────────────────────────────────────────────
 // Touch devices get a tap toggle since :hover is unreliable
