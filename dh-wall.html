@@ -139,8 +139,8 @@ html, body {
   height: 100%;
   width: auto;
   display: block;
-  mix-blend-mode: screen;
-  filter: contrast(1.1) brightness(1.08);
+  /* No blend mode needed — expects a transparent-background PNG */
+  filter: drop-shadow(0 8px 40px rgba(0,0,0,0.7));
 }
 
 /* ── Below-fold content ── */
@@ -193,7 +193,7 @@ html, body {
 <section class="hero">
   <div id="grid"></div>
   <div class="dh-wrap">
-    <img src="dh.jpg" alt="Darren Hardy">
+    <img src="dh-cutout.png" alt="Darren Hardy">
   </div>
 </section>
 
