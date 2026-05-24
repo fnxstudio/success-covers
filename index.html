@@ -164,7 +164,6 @@ const covers = [
   'SM_12_04_LOWE.jpg',
   'SM_12_05_ORMAN.jpg',
   'SM_12_06_JOHANNSON.jpg',
-  'SM_12_07_TECHNOLOGY.jpg',
   'SM_12_08_BRANSON.jpg',
   'SM_12_09_BURNETT.jpg',
   'SM_12_10_MAXWELL.jpg',
@@ -244,10 +243,21 @@ covers.forEach((cover, i) => {
   grid.appendChild(tile);
 });
 
-// ── Staggered entrance (80 ms/tile → 65 tiles ≈ 5.2 s total) ─────────────
+// ── Staggered entrance (80 ms/tile → ~5 s total) ─────────────────────────
 document.querySelectorAll('.tile').forEach((tile, i) =>
   setTimeout(() => tile.classList.add('visible'), i * 80)
 );
+
+// ── Fix last row: expand final tile to fill any trailing gap ──────────────
+requestAnimationFrame(() => {
+  const tiles = Array.from(grid.querySelectorAll('.tile'));
+  const last  = tiles[tiles.length - 1];
+  const gridRight = grid.getBoundingClientRect().right;
+  const tileRight = last.getBoundingClientRect().right;
+  if (gridRight - tileRight > 5) {
+    last.style.gridColumnEnd = '-1';
+  }
+});
 
 // ── Mobile tap-to-hover ──────────────────────────────────────────────────
 // Touch devices get a tap toggle since :hover is unreliable
