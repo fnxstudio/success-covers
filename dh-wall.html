@@ -171,17 +171,38 @@ html, body {
 
 /* ── Mobile ── */
 @media (max-width: 767px) {
-  #grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 105px;
-    grid-auto-flow: row;
-    gap: 2px;
+  /* Hero expands to fit the whole grid — no clipping */
+  .hero {
+    height: auto;
+    overflow: visible;
   }
+
+  /* Grid flows as normal document content, 3 columns */
+  #grid {
+    position: relative;
+    inset: auto;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 120px;
+    grid-auto-flow: dense;
+    gap: 2px;
+    padding-bottom: 56vh; /* breathing room so last row isn't hidden behind DH */
+  }
+
+  /* All spans collapse to 1×1 so no tile crowds out others */
   .span-wide, .span-tall, .span-large {
     grid-column: span 1 !important;
     grid-row:    span 1 !important;
   }
-  .dh-wrap { height: 70%; }
+
+  /* DH fixed at bottom — fully visible, covers scroll behind him */
+  .dh-wrap {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 56vh;
+    z-index: 100;
+  }
 }
 </style>
 </head>
@@ -300,9 +321,10 @@ document.querySelectorAll('.tile').forEach(tile => {
   }, { passive: false });
 });
 
-// Parallax — grid scrolls at 40% of page speed, DH stays pinned at bottom
+// Parallax on desktop only — grid is normal flow on mobile
 const heroGrid = document.getElementById('grid');
 window.addEventListener('scroll', () => {
+  if (window.innerWidth <= 767) return;
   heroGrid.style.transform = `translateY(${window.scrollY * -0.4}px)`;
 }, { passive: true });
 </script>
