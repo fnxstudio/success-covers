@@ -123,7 +123,7 @@ html, body {
   z-index: 5;
 }
 
-/* ── DH cutout — screen blend makes his dark background transparent ── */
+/* ── DH cutout — transparent PNG, pinned to bottom of hero ── */
 .dh-wrap {
   position: absolute;
   bottom: 0;
@@ -133,14 +133,15 @@ html, body {
   z-index: 10;
   pointer-events: none;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-end;    /* image bottom = hero bottom */
 }
 .dh-wrap img {
+  display: block;
   height: 100%;
   width: auto;
-  display: block;
-  /* No blend mode needed — expects a transparent-background PNG */
-  filter: drop-shadow(0 8px 40px rgba(0,0,0,0.7));
+  max-height: 100%;
+  vertical-align: bottom;  /* eliminates any inline gap */
+  filter: drop-shadow(0 8px 48px rgba(0,0,0,0.8));
 }
 
 /* ── Below-fold content ── */
@@ -193,7 +194,7 @@ html, body {
 <section class="hero">
   <div id="grid"></div>
   <div class="dh-wrap">
-    <img src="dh-cutout.png" alt="Darren Hardy">
+    <img src="dh.png" alt="Darren Hardy">
   </div>
 </section>
 
