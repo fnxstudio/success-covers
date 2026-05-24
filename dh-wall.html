@@ -212,7 +212,9 @@ html, body {
   }
 
   .dh-wrap img {
-    max-width: 90vw;
+    height: auto;
+    max-height: 56vh;
+    max-width: 85vw;
   }
 }
 </style>
@@ -324,12 +326,19 @@ document.querySelectorAll('.tile').forEach((tile, i) =>
 );
 
 document.querySelectorAll('.tile').forEach(tile => {
+  let touchStartY, touchStartX;
   tile.addEventListener('touchstart', e => {
-    e.preventDefault();
+    touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  tile.addEventListener('touchend', e => {
+    const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+    const dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
+    if (dy > 8 || dx > 8) return; // swipe — don't toggle
     const active = tile.classList.contains('tapped');
     document.querySelectorAll('.tile.tapped').forEach(t => t.classList.remove('tapped'));
     if (!active) tile.classList.add('tapped');
-  }, { passive: false });
+  });
 });
 
 // Parallax on desktop only — grid is normal flow on mobile
