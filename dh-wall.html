@@ -171,6 +171,9 @@ html, body {
 
 /* ── Mobile ── */
 @media (max-width: 767px) {
+  /* overflow-x:hidden on body blocks vertical scroll on iOS — restore it */
+  body { overflow-y: auto; }
+
   /* Hero expands to fit the whole grid — no clipping */
   .hero {
     height: auto;
@@ -185,23 +188,31 @@ html, body {
     grid-auto-rows: 120px;
     grid-auto-flow: dense;
     gap: 2px;
-    padding-bottom: 56vh; /* breathing room so last row isn't hidden behind DH */
+    padding-bottom: 56vh;
   }
 
-  /* All spans collapse to 1×1 so no tile crowds out others */
+  /* All spans collapse to 1×1 */
   .span-wide, .span-tall, .span-large {
     grid-column: span 1 !important;
     grid-row:    span 1 !important;
   }
 
-  /* DH fixed at bottom — fully visible, covers scroll behind him */
+  /* DH: full-width container + centered child avoids left-clip.
+     Safe-area padding keeps him above the home bar on notched iPhones. */
   .dh-wrap {
     position: fixed;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
     height: 56vh;
+    transform: none;
+    justify-content: center;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     z-index: 100;
+  }
+
+  .dh-wrap img {
+    max-width: 90vw;
   }
 }
 </style>
