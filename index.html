@@ -22,7 +22,7 @@ html, body {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-auto-rows: 280px;
-  grid-auto-flow: dense;
+  grid-auto-flow: row;
   width: 100%;
   gap: 3px;
 }
@@ -127,11 +127,18 @@ body::after {
 <div id="grid"></div>
 
 <script>
+// ── Featured covers boosted to top; Trump pushed to row ~12 ──────────────
 const covers = [
+  // top zone — rows 1-4
+  'SM_10_12_SHRIVER.jpg',
+  'SM_13_05_FORD.jpg',
+  'SM_12_01_DOWNEY.jpg',
+  'SM_09_07_BRANSON.jpg',
+  'SM_12_08_BRANSON.jpg',
+  // main body
   'JackWelch.jpg',
   'SM_08_01_Kiyosaki.jpg',
   'SM_08_02_50.jpg',
-  'SM_08_03_Trump.jpg',
   'SM_08_04_OZ.jpg',
   'SM_08_05_HAWK.jpg',
   'SM_08_06_Deutsch.jpg',
@@ -141,7 +148,6 @@ const covers = [
   'SM_09_04_Maxwell.jpg',
   'SM_09_05_ORMAN.jpg',
   'SM_09_06_LANCE.jpg',
-  'SM_09_07_BRANSON.jpg',
   'SM_09_08_FOX.jpg',
   'SM_09_09_FOSTER_Barcode.jpg',
   'SM_09_10_SERENA_barcode.jpg',
@@ -158,7 +164,6 @@ const covers = [
   'SM_10_09_DELL.jpg',
   'SM_10_10_USHER.jpg',
   'SM_10_11_MANNINGS.jpg',
-  'SM_10_12_SHRIVER.jpg',
   'SM_11_01_HOWARD.jpg',
   'SM_11_02_CHAN.jpg',
   'SM_11_03_SCHWAB.jpg',
@@ -171,13 +176,11 @@ const covers = [
   'SM_11_10_OZ.jpg',
   'SM_11_11_CUBAN.jpg',
   'SM_11_12_SANTA.jpg',
-  'SM_12_01_DOWNEY.jpg',
   'SM_12_02_KARDASHIAN.jpg',
   'SM_12_03_BLOOMBERG.jpg',
   'SM_12_04_LOWE.jpg',
   'SM_12_05_ORMAN.jpg',
   'SM_12_06_JOHANNSON.jpg',
-  'SM_12_08_BRANSON.jpg',
   'SM_12_09_BURNETT.jpg',
   'SM_12_10_MAXWELL.jpg',
   'SM_12_11_WASHINGTON.jpg',
@@ -186,7 +189,8 @@ const covers = [
   'SM_13_02_MUSK.jpg',
   'SM_13_03_CORCORAN.jpg',
   'SM_13_04_DIAMANDIS.jpg',
-  'SM_13_05_FORD.jpg',
+  // Trump pushed to bottom third
+  'SM_08_03_Trump.jpg',
   'SM_14_11_COOK.jpg',
   'Santa1977.jpg',
   'Tony_Hseih.jpg'
@@ -203,42 +207,51 @@ function cleanName(f) {
   return n;
 }
 
-// ── Deterministic tile-type pool (seeded shuffle) ─────────────────────────
-// Cell-unit math for n=61, 6 columns:
-//   1 large(4) + 8 wide(2) + 12 tall(2) + 40 standard(1)
-//   = 4 + 16 + 24 + 40 = 84 cell-units = exactly 6×14 rows → clean bottom
-function buildTypePool(n) {
-  const large = 1;
-  const wide  = 8;
-  const tall  = 12;
-  const std   = n - large - wide - tall; // 40 for n=61
-  const pool  = [
-    ...Array(large).fill('large'),
-    ...Array(wide).fill('wide'),
-    ...Array(tall).fill('tall'),
-    ...Array(std).fill('standard'),
+// ── Manual types for featured covers ─────────────────────────────────────
+// Indices 0-4 are the boosted covers; give them prominent sizes.
+// Cell-units: large(4) + tall(2) + wide(2) + tall(2) + wide(2) = 12
+const featuredTypes = ['large', 'tall', 'wide', 'tall', 'wide'];
+
+// ── Spread type pool for the remaining 57 covers ──────────────────────────
+// Need 84 - 12 = 72 cell-units from 57 tiles:
+//   8 wide(2) + 7 tall(2) + 42 standard(1) = 57 tiles, 16+14+42 = 72 ✓
+// Spread non-standard tiles evenly so every row has size variety.
+function buildSpreadPool(n) {
+  const wideCount = 8, tallCount = 7;
+  const special = [
+    ...Array(wideCount).fill('wide'),
+    ...Array(tallCount).fill('tall'),
   ];
-  // LCG seeded shuffle — same layout every load
-  let s = 0xdeadbeef;
-  for (let i = pool.length - 1; i > 0; i--) {
+
+  // Seeded shuffle of special types among themselves
+  let s = 0xc0ffee42;
+  for (let i = special.length - 1; i > 0; i--) {
     s = Math.imul(s ^ (s >>> 16), 0x45d9f3b);
     s = Math.imul(s ^ (s >>> 16), 0x45d9f3b);
     s ^= s >>> 16;
     const j = (Math.abs(s) >>> 0) % (i + 1);
-    [pool[i], pool[j]] = [pool[j], pool[i]];
+    [special[i], special[j]] = [special[j], special[i]];
   }
+
+  // Place special tiles at evenly-spaced intervals across the pool
+  const pool = Array(n).fill('standard');
+  const step = (n - 1) / (special.length - 1);
+  special.forEach((type, i) => {
+    pool[Math.round(i * step)] = type;
+  });
   return pool;
 }
 
 // ── Build DOM ─────────────────────────────────────────────────────────────
-const types = buildTypePool(covers.length);
-const grid  = document.getElementById('grid');
+const bodyCovers = covers.slice(5);           // covers after the 5 featured
+const bodyTypes  = buildSpreadPool(bodyCovers.length);
+const grid       = document.getElementById('grid');
 
 covers.forEach((cover, i) => {
   const tile = document.createElement('div');
   tile.className = 'tile';
 
-  const t = types[i];
+  const t = i < 5 ? featuredTypes[i] : bodyTypes[i - 5];
   if (t === 'wide')  tile.classList.add('span-wide');
   if (t === 'tall')  tile.classList.add('span-tall');
   if (t === 'large') tile.classList.add('span-large');
