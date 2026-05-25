@@ -407,31 +407,39 @@
   .intro {
     background: var(--bone);
     color: var(--black);
-    padding: 140px 0 120px;
   }
   .intro .eyebrow { color: var(--grey-soft); }
   .intro .eyebrow .pip { background: var(--grey-soft); }
 
   .intro-grid {
     display: grid;
-    grid-template-columns: 0.85fr 1.3fr;
-    gap: 80px;
+    grid-template-columns: 1fr 1.15fr;
+    min-height: 720px;
     align-items: stretch;
   }
   @media (max-width: 880px) {
-    .intro-grid { grid-template-columns: 1fr; gap: 48px; align-items: start; }
+    .intro-grid { grid-template-columns: 1fr; }
   }
 
-  /* ── Covers wall replaces portrait ── */
+  /* ── Covers wall — full bleed, no container boxing ── */
   .intro-wall {
     position: relative;
     overflow: hidden;
     background: #0a0a0a;
-    min-height: 560px;
-    height: 100%;
   }
   @media (max-width: 880px) {
-    .intro-wall { aspect-ratio: 4/5; height: auto; }
+    .intro-wall { min-height: 480px; }
+  }
+
+  /* ── Text column — carries its own padding ── */
+  .intro-text {
+    padding: 100px 80px 100px 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  @media (max-width: 880px) {
+    .intro-text { padding: 64px 32px; }
   }
 
   #covers-grid {
@@ -1022,29 +1030,27 @@
 
 <!-- INTRO — DH + COVERS WALL -->
 <section class="intro">
-  <div class="container">
-    <div class="intro-grid">
+  <div class="intro-grid">
 
-      <!-- Covers wall (replaces portrait) -->
-      <div class="intro-wall">
-        <div id="covers-grid"></div>
-        <div class="dh-wrap">
-          <img src="dh.png" alt="Darren Hardy" />
-        </div>
+    <!-- Covers wall — full bleed -->
+    <div class="intro-wall">
+      <div id="covers-grid"></div>
+      <div class="dh-wrap">
+        <img src="dh.png" alt="Darren Hardy" />
       </div>
-
-      <!-- Copy -->
-      <div class="intro-text">
-        <div class="eyebrow"><span class="pip"></span>Your Unfair Advantage</div>
-        <h2 class="intro-headline">The Advisor Behind The World's Most Driven Business Builders</h2>
-        <div class="intro-body">
-          <p>Darren Hardy has stood at the center of the success media industry: founding publisher of SUCCESS magazine, creator of three success-focused television networks, and trusted advisor to thousands of the world's top CEOs, founders, and business leaders.</p>
-          <p>For 35 years, he has been inside the rooms where elite operators, industry titans, and market makers reveal how they think, decide, build, scale, and win.</p>
-          <p>He turns those rare patterns into practical strategies ambitious enterprise builders can install, compound, and use to seize hidden opportunities, accelerate growth, and shape industries, communities, and the world.</p>
-        </div>
-      </div>
-
     </div>
+
+    <!-- Copy -->
+    <div class="intro-text">
+      <div class="eyebrow"><span class="pip"></span>Your Unfair Advantage</div>
+      <h2 class="intro-headline">The Advisor Behind The World's Most Driven Business Builders</h2>
+      <div class="intro-body">
+        <p>Darren Hardy has stood at the center of the success media industry: founding publisher of SUCCESS magazine, creator of three success-focused television networks, and trusted advisor to thousands of the world's top CEOs, founders, and business leaders.</p>
+        <p>For 35 years, he has been inside the rooms where elite operators, industry titans, and market makers reveal how they think, decide, build, scale, and win.</p>
+        <p>He turns those rare patterns into practical strategies ambitious enterprise builders can install, compound, and use to seize hidden opportunities, accelerate growth, and shape industries, communities, and the world.</p>
+      </div>
+    </div>
+
   </div>
 </section>
 
