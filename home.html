@@ -83,9 +83,58 @@
     white-space: nowrap;
   }
 
+  .nav-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .nav-burger span {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: var(--white);
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+  .nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-burger.open span:nth-child(2) { opacity: 0; }
+  .nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .nav-mobile {
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    background: rgba(10, 10, 10, 0.97);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--rule);
+    display: none;
+    flex-direction: column;
+  }
+  .nav-mobile.open { display: flex; }
+  .nav-mobile a {
+    color: var(--silver);
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--rule);
+    transition: color 0.18s;
+  }
+  .nav-mobile a:last-child { border-bottom: none; }
+  .nav-mobile a:active { color: var(--white); }
+
   @media (max-width: 960px) {
-    nav.top { padding: 16px 24px; grid-template-columns: 1fr auto; }
+    nav.top { padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
     .nav-left, .nav-right { display: none; }
+    .nav-burger { display: flex; }
   }
 
   /* ============ SECTION DEFAULTS ============ */
@@ -947,6 +996,17 @@
   </div>
   <a class="nav-brand" href="#">Darren Hardy</a>
   <div class="nav-right">
+    <a href="#">Daily Mentoring</a>
+    <a href="#">Free Audio Book</a>
+    <a href="#">Mailing List</a>
+  </div>
+  <button class="nav-burger" aria-label="Menu" onclick="this.classList.toggle('open');document.getElementById('navMobile').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-mobile" id="navMobile">
+    <a href="#">About</a>
+    <a href="#">Resources</a>
+    <a href="#">Community</a>
     <a href="#">Daily Mentoring</a>
     <a href="#">Free Audio Book</a>
     <a href="#">Mailing List</a>
