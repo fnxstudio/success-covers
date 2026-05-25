@@ -4,58 +4,69 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Darren Hardy – Your Unfair Advantage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   background: #0a0a0a;
 }
 
 /* ── Nav ── */
-.site-nav {
-  height: 52px;
-  background: #0d0d0d;
-  border-bottom: 1px solid #1a1a1a;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  position: relative;
+nav.top {
+  position: fixed;
+  top: 0; left: 0; right: 0;
   z-index: 200;
+  padding: 20px 40px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 40px;
+  background: rgba(10, 10, 10, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
-.nav-links {
+.nav-left, .nav-right {
   display: flex;
   gap: 36px;
-  flex: 1;
-}
-.nav-links.right { justify-content: flex-end; }
-.site-nav a {
-  font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.2em;
+  font-size: 10px;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #666;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 0.2s;
 }
-.site-nav a:hover { color: #fff; }
+.nav-left { justify-content: flex-end; }
+.nav-right { justify-content: flex-start; }
+.nav-left a, .nav-right a {
+  color: #b8b8b8;
+  text-decoration: none;
+  transition: color 0.18s;
+}
+.nav-left a:hover, .nav-right a:hover { color: #fff; }
 .nav-brand {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   color: #fff;
-  flex-shrink: 0;
-  padding: 0 40px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+@media (max-width: 960px) {
+  nav.top { padding: 16px 24px; grid-template-columns: 1fr auto; }
+  .nav-left, .nav-right { display: none; }
 }
 
 /* ── Split layout ── */
 .split {
   display: flex;
   min-height: 100vh;
+  padding-top: 65px;
 }
 
 /* ── Left: copy ── */
@@ -283,14 +294,14 @@ footer {
 </head>
 <body>
 
-<nav class="site-nav">
-  <div class="nav-links left">
+<nav class="top">
+  <div class="nav-left">
     <a href="#">About</a>
     <a href="#">Resources</a>
     <a href="#">Community</a>
   </div>
-  <div class="nav-brand">Darren Hardy</div>
-  <div class="nav-links right">
+  <a class="nav-brand" href="#">Darren Hardy</a>
+  <div class="nav-right">
     <a href="#">Daily Mentoring</a>
     <a href="#">Free Audio Book</a>
     <a href="#">Mailing List</a>
