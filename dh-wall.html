@@ -203,8 +203,10 @@ nav.top {
 
 /* ── Mobile ── */
 @media (max-width: 767px) {
-  /* Hero stays fixed-height and clipped — same as desktop.
-     The touch-handler fix (touchend) is what allows page scroll. */
+  .hero {
+    height: 65vh;
+  }
+
   #grid {
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 120px;
@@ -217,8 +219,6 @@ nav.top {
     grid-row:    span 1 !important;
   }
 
-  /* DH: full-width container centers him without left-clip risk.
-     90% height keeps him prominent and grounded at the bottom. */
   .dh-wrap {
     left: 0;
     right: 0;
