@@ -426,22 +426,11 @@ document.querySelectorAll('.tile').forEach(tile => {
   });
 });
 
-// Auto-scroll: covers continuously roll upward + extra push on page scroll
+// Parallax: covers scroll at 1.8× page speed so more rows roll before copy moves
 const wallGrid = document.getElementById('grid');
-const wallContainer = document.querySelector('.wall-side');
-let autoY = 0;
-let pageY = 0;
-
-(function tick() {
-  const maxScroll = Math.max(1, wallGrid.scrollHeight - wallContainer.clientHeight);
-  autoY = (autoY + 0.5) % maxScroll;
-  wallGrid.style.transform = `translateY(-${autoY + pageY}px)`;
-  requestAnimationFrame(tick);
-})();
-
 window.addEventListener('scroll', () => {
   if (window.innerWidth <= 767) return;
-  pageY = window.scrollY * 0.7;
+  wallGrid.style.transform = `translateY(${window.scrollY * -1.8}px)`;
 }, { passive: true });
 </script>
 </body>
