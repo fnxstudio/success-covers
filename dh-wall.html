@@ -14,29 +14,50 @@ html, body {
   overflow-x: hidden;
 }
 
-/* ── Minimal page chrome ── */
+/* ── Nav ── */
 .site-nav {
-  height: 68px;
+  height: 52px;
+  background: #0d0d0d;
+  border-bottom: 1px solid #1a1a1a;
   display: flex;
   align-items: center;
-  padding: 0 48px;
-  background: #000;
-  border-bottom: 1px solid #1c1c1c;
+  justify-content: space-between;
+  padding: 0 40px;
   position: relative;
   z-index: 100;
 }
-.site-nav .logo {
-  font-size: 12px;
-  letter-spacing: 0.28em;
+.nav-links {
+  display: flex;
+  gap: 36px;
+  flex: 1;
+}
+.nav-links.right { justify-content: flex-end; }
+.site-nav a {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  opacity: 0.45;
+  color: #666;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.site-nav a:hover { color: #fff; }
+.nav-brand {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff;
+  flex-shrink: 0;
+  padding: 0 40px;
 }
 
 /* ── Hero section — contains the grid + DH overlay ── */
 .hero {
   position: relative;
   width: 100%;
-  height: calc(100vh - 68px);
+  height: calc(100vh - 52px);
   overflow: hidden;
   background: #000;
 }
@@ -207,7 +228,17 @@ html, body {
 <body>
 
 <nav class="site-nav">
-  <span class="logo">Darren Hardy &nbsp;·&nbsp; Success</span>
+  <div class="nav-links left">
+    <a href="#">About</a>
+    <a href="#">Resources</a>
+    <a href="#">Community</a>
+  </div>
+  <div class="nav-brand">Darren Hardy</div>
+  <div class="nav-links right">
+    <a href="#">Daily Mentoring</a>
+    <a href="#">Free Audio Book</a>
+    <a href="#">Mailing List</a>
+  </div>
 </nav>
 
 <section class="hero">
@@ -330,7 +361,7 @@ document.querySelectorAll('.tile').forEach(tile => {
 const heroGrid = document.getElementById('grid');
 window.addEventListener('scroll', () => {
   if (window.innerWidth <= 767) return;
-  heroGrid.style.transform = `translateY(${window.scrollY * -0.4}px)`;
+  heroGrid.style.transform = `translateY(${window.scrollY * -0.7}px)`;
 }, { passive: true });
 </script>
 </body>

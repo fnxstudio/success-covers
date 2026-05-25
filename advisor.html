@@ -13,6 +13,45 @@ html, body {
   background: #0a0a0a;
 }
 
+/* ── Nav ── */
+.site-nav {
+  height: 52px;
+  background: #0d0d0d;
+  border-bottom: 1px solid #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  position: relative;
+  z-index: 200;
+}
+.nav-links {
+  display: flex;
+  gap: 36px;
+  flex: 1;
+}
+.nav-links.right { justify-content: flex-end; }
+.site-nav a {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #666;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.site-nav a:hover { color: #fff; }
+.nav-brand {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff;
+  flex-shrink: 0;
+  padding: 0 40px;
+}
+
 /* ── Split layout ── */
 .split {
   display: flex;
@@ -244,6 +283,20 @@ footer {
 </head>
 <body>
 
+<nav class="site-nav">
+  <div class="nav-links left">
+    <a href="#">About</a>
+    <a href="#">Resources</a>
+    <a href="#">Community</a>
+  </div>
+  <div class="nav-brand">Darren Hardy</div>
+  <div class="nav-links right">
+    <a href="#">Daily Mentoring</a>
+    <a href="#">Free Audio Book</a>
+    <a href="#">Mailing List</a>
+  </div>
+</nav>
+
 <div class="split">
 
   <!-- ── Wall side ── -->
@@ -373,11 +426,22 @@ document.querySelectorAll('.tile').forEach(tile => {
   });
 });
 
-// Parallax: wall grid drifts at 40% of page scroll speed
+// Auto-scroll: covers continuously roll upward + extra push on page scroll
 const wallGrid = document.getElementById('grid');
+const wallContainer = document.querySelector('.wall-side');
+let autoY = 0;
+let pageY = 0;
+
+(function tick() {
+  const maxScroll = Math.max(1, wallGrid.scrollHeight - wallContainer.clientHeight);
+  autoY = (autoY + 0.5) % maxScroll;
+  wallGrid.style.transform = `translateY(-${autoY + pageY}px)`;
+  requestAnimationFrame(tick);
+})();
+
 window.addEventListener('scroll', () => {
   if (window.innerWidth <= 767) return;
-  wallGrid.style.transform = `translateY(${window.scrollY * -0.4}px)`;
+  pageY = window.scrollY * 0.7;
 }, { passive: true });
 </script>
 </body>
